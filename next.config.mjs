@@ -1,0 +1,29 @@
+import withPWA from 'next-pwa';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+};
+
+const config = withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/firestore\.googleapis\.com/,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'firestore-cache',
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 60 * 60 * 24, // 24 hours
+        },
+      },
+    },
+  ],
+})(nextConfig);
+
+export default config;
